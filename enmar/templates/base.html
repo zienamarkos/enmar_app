@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard{% endblock %}</title>
+    
+    <!-- Tailwind CDN (use until your Tailwind build works) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-lg fixed h-full">
+        <div class="p-6 border-b">
+            <h1 class="text-2xl font-bold text-blue-600">MyCyber</h1>
+        </div>
+
+        <nav class="p-4 space-y-2">
+            <a href="/dashboard/" class="block p-3 rounded hover:bg-blue-50">🏠 Dashboard</a>
+            <a href="/profile/" class="block p-3 rounded hover:bg-blue-50">👤 Profile</a>
+            <a href="/courses/" class="block p-3 rounded hover:bg-blue-50">📘 Courses</a>
+            <a href="/reports/" class="block p-3 rounded hover:bg-blue-50">📊 Reports</a>
+            <a href="/settings/" class="block p-3 rounded hover:bg-blue-50">⚙️ Settings</a>
+            <a href="{% url 'login' %}" class="block p-3 text-red-600 rounded hover:bg-red-50">🚪 Logout</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 p-8 flex-1">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+</html>

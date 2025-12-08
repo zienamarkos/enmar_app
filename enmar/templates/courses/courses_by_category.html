@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Courses by Category{% endblock %}
+
+{% block content %}
+<h1>Courses by Category</h1>
+
+{% if courses_by_category %}
+  {% for category, courses in courses_by_category.items %}
+    <section class="category">
+      <h2>{{ category }}</h2>
+      {% if courses %}
+        <ul class="course-list">
+          {% for course in courses %}
+            <li class="course-item">
+              {% if course.get_absolute_url %}
+                <a href="{{ course.get_absolute_url }}">{{ course.title }}</a>
+              {% else %}
+                <a href="{% url 'course-detail' course.pk %}">{{ course.title }}</a>
+              {% endif %}
+              <p class="course-desc">{{ course.description|truncatewords:25 }}</p>
+              <small class="course-meta">Difficulty: {{ course.get_difficulty_display }}</small>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No courses found in this category.</p>
+      {% endif %}
+    </section>
+  {% endfor %}
+{% else %}
+  <p>No courses available.</p>
+{% endif %}
+
+{% endblock %}
