@@ -27,4 +27,5 @@ def register_view(request):
 class CustomLoginView(LoginView):
     template_name = "registration/login.html"
     authentication_form = LoginForm
+    
    

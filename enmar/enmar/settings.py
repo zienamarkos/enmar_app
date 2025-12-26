@@ -49,14 +49,29 @@ INSTALLED_APPS = [
     "tailwind",
     "theme",
     "django_browser_reload",
+    
+    "rest_framework",
+    "rest_framework.authtoken",
+   
 
     "accounts",
     "courses",
     "labs",
     "quizzes",
     "dashboard",
+   
 
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
