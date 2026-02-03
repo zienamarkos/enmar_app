@@ -1,7 +1,9 @@
 <h2>Login</h2>
 <form method="POST">
     {% csrf_token %}
+    <input type="hidden" name="{{ view.redirect_field_name }}" value="{{ next }}">
     {{ form.as_p }}
     <button type="submit">Login</button>
 </form>
+    <p>Don't have an account?<a href="{% url 'register' %}"> <button class="btn btn-primary"><b> Sign up here </b></button></a>.</p>
 
