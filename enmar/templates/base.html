@@ -18,12 +18,14 @@
         </div>
 
         <nav class="p-4 space-y-2">
-            <a href="/dashboard/" class="block p-3 rounded hover:bg-blue-50">🏠 Dashboard</a>
-            <a href="/profile/" class="block p-3 rounded hover:bg-blue-50">👤 Profile</a>
-            <a href="/courses/" class="block p-3 rounded hover:bg-blue-50">📘 Courses</a>
-            <a href="/reports/" class="block p-3 rounded hover:bg-blue-50">📊 Reports</a>
-            <a href="/settings/" class="block p-3 rounded hover:bg-blue-50">⚙️ Settings</a>
             <a href="{% url 'login' %}" class="block p-3 text-red-600 rounded hover:bg-red-50">🚪 Logout</a>
+            <a href="{% url 'dashboard' %}" class="block p-3">🏠 Dashboard</a>
+            <a href="{% url 'profile' %}" class="block p-3">👤 Profile</a>
+            <a href="{% url 'course_category_list' %}" class="block p-3">📘 Courses</a>
+            <a href="{% url 'reports' %}" class="block p-3">📊 Reports</a>
+            <a href="{% url 'settings' %}" class="block p-3">⚙️ Settings</a>
+            <a href="{% url 'logout' %}" class="block p-3 text-red-600">🚪 Logout</a>
+
         </nav>
     </aside>
 

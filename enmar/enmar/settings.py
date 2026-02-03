@@ -85,7 +85,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'enmar.urls'
-LOGIN_REDIRECT_URL = "/accounts/profile/"
+LOGIN_REDIRECT_URL = "/dashboard/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 

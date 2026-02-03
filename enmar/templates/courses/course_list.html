@@ -7,7 +7,7 @@
 <ul>
     {% for c in courses %}
         <li>
-            <a href="{% url 'course_detail' c.id %}">{{ c.title }}</a> 
+            <a href="{% url 'course_list' c.id %}">{{ c.title }}</a> 
             ({{ c.difficulty }})
         </li>
     {% endfor %}
