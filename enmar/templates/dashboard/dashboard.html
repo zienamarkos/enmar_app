@@ -47,5 +47,58 @@
         </div>
 
     </div>
+    <h2>Your courses</h2>
+<ul>
+  {% for e in my_enrollments %}
+    <li>
+      <a class="text-blue-600 hover:underline" href="{{ e.course.get_absolute_url }}">{{ e.course.title }}</a>
+      <form method="post" action="{% url 'courses:unenroll' category_slug=e.course.category.slug course_slug=e.course.slug %}" style="display:inline">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" type="submit">Unenroll</button>
+      </form>
+    </li>
+  {% empty %}
+    <li>You are not enrolled in any courses yet.</li>
+  {% endfor %}
+</ul>
+
+<hr>
+
+<h2>Available courses</h2>
+{% for cat in categories %}
+  <section>
+    <h3>{{ cat.title }}</h3>
+    <ul>
+      {% for course in cat.courses.all %}
+        <li>
+          <a class="text-blue-600 hover:underline" href="{{ course.get_absolute_url }}">{{ course.title }}</a>
+          {% if course.id in enrolled_course_ids %}
+            <!-- Already enrolled -->
+            <span> — Enrolled</span>
+            <form method="post" action="{% url 'courses:unenroll' category_slug=course.category.slug course_slug=course.slug %}" style="display:inline">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.path }}">
+              <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" type="submit">Unenroll</button>
+            </form>
+          {% else %}
+            <!-- Not enrolled: show enroll button -->
+            <form method="post" action="{% url 'courses:enroll' category_slug=course.category.slug course_slug=course.slug %}" style="display:inline">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.path }}">
+              <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit" {% if course.is_full %}disabled{% endif %}>
+                {% if course.is_full %}Full{% else %}Enroll{% endif %}
+              </button>
+            </form>
+          {% endif %}
+        </li>
+      {% empty %}
+        <li>No courses in this category.</li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endfor %}
 </div>
 {% endblock %}
+
+

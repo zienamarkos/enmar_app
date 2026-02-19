@@ -38,7 +38,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -88,7 +87,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'enmar.urls'
 LOGIN_URL = reverse_lazy("login") 
-LOGIN_REDIRECT_URL = reverse_lazy("/dashboard/dashboard")
+LOGIN_REDIRECT_URL = reverse_lazy("dashboard")
 LOGOUT_REDIRECT_URL = reverse_lazy("/accounts/login/")
 
 TEMPLATES = [

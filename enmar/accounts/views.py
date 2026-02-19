@@ -38,6 +38,6 @@ class CustomLoginView(LoginView):
         if redirect_to:
             return redirect_to
         # Fallback to a named URL for the dashboard
-        return reverse_lazy("dashboard")
+        return reverse_lazy("dashboards")
 
 
