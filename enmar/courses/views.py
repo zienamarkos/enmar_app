@@ -8,6 +8,9 @@ from django.views.generic import ListView, DetailView, View
 
 from .models import Category, Course, Enrollment
 from .forms import EnrollmentForm
+from django.shortcuts import get_object_or_404, redirect
+from .models import Course, Enrollment, Activity
+
 
 class CategoryListView(ListView):
     model = Category
@@ -71,12 +74,6 @@ def enroll_course(request, category_slug, course_slug):
 
     # For GET, show a confirmation page if desired, or redirect to course page
     return render(request, "courses/enroll_confirm.html", {"course": course})
-
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse
-from .models import Course, Enrollment, Activity
 
 @login_required(login_url=reverse_lazy("login"))
 def unenroll_course(request, category_slug, course_slug):
