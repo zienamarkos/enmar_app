@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import IntegrityError, transaction
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
@@ -51,29 +52,52 @@ class CourseDetailView(DetailView):
 
 @login_required(login_url=reverse_lazy("login"))
 def enroll_course(request, category_slug, course_slug):
+    """
+    Idempotent enroll endpoint:
+    - Creates Enrollment if none exists.
+    - If an Enrollment exists but is not active, reactivate it.
+    - If two requests race, catch IntegrityError and re-fetch the Enrollment.
+    """
     course = get_object_or_404(Course, category__slug=category_slug, slug=course_slug)
-
-    # Prevent enroll if already enrolled
-    existing = Enrollment.objects.filter(user=request.user, course=course, status="active").first()
-    if existing:
-        messages.info(request, "You are already registered for this course.")
+    if request.method != "POST":
         return redirect(course.get_absolute_url())
 
-    # Optional capacity check
-    if course.is_full():
-        messages.error(request, "This course is full and cannot accept more registrations.")
-        return redirect(course.get_absolute_url())
+    next_url = request.POST.get("next") or reverse("dashboard:dashboard")
 
-    if request.method == "POST":
-        # create enrollment
-        Enrollment.objects.create(user=request.user, course=course)
-        messages.success(request, "You have been registered for the course.")
-        # Redirect to course page or dashboard; next param can be used if present
-        next_url = request.POST.get("next") or reverse("courses:course_detail", kwargs={"category_slug": category_slug, "course_slug": course_slug})
-        return redirect(next_url)
+    try:
+        # Atomic block to group the operations
+        with transaction.atomic():
+            enrollment, created = Enrollment.objects.get_or_create(
+                user=request.user,
+                course=course,
+                defaults={"status": "active"},
+            )
 
-    # For GET, show a confirmation page if desired, or redirect to course page
-    return render(request, "courses/enroll_confirm.html", {"course": course})
+            # If the enrollment already existed but was not active, reactivate it.
+            if not created and enrollment.status != "active":
+                enrollment.status = "active"
+                enrollment.save(update_fields=["status"])
+
+    except IntegrityError:
+        # A race created a duplicate row at the same time; fetch the existing one.
+        enrollment = Enrollment.objects.filter(user=request.user, course=course).first()
+        if enrollment:
+            if enrollment.status != "active":
+                enrollment.status = "active"
+                enrollment.save(update_fields=["status"])
+        else:
+            # Unexpected: re-raise so we can see the error during debugging
+            raise
+
+    # Log activity but don't let logging break the user flow
+    try:
+        Activity.log(user=request.user, action="enrolled", course=course, metadata={})
+    except Exception:
+        # swallow errors from activity logging to avoid 500s from auxiliary failure
+        pass
+
+    messages.success(request, "You have been enrolled in the course.")
+    return redirect(next_url)
 
 @login_required(login_url=reverse_lazy("login"))
 def unenroll_course(request, category_slug, course_slug):
