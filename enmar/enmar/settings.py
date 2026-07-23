@@ -18,9 +18,9 @@ from django.urls import reverse_lazy
 BASE_DIR = Path(__file__).resolve().parent.parent
 # STATIC_URL = '/static/'
 
-# STATICFILES_DIRS = [
-#     BASE_DIR / "static",
-# ]
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 # STATIC_ROOT = BASE_DIR / "staticfiles"
 TAILWIND_APP_NAME = 'theme'
@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "labs",
     "quizzes",
     "dashboard",
+    "static",
    
 
 ]

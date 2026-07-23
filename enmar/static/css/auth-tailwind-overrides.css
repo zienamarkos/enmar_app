@@ -1,0 +1,4 @@
+body{
+    /* Override Tailwind's default form styles for auth pages */
+    @apply bg-white p-8 rounded-lg shadow-md;
+}
